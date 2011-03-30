@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cloud GUI</title>
+    <link rel="stylesheet" type="text/css" href="skins/start/skin.css">
+    <script type="text/javascript" data-main="main" src="require-0.24.0.js"></script>
+  </head>
+  <body>
+    <div id="view" style="position:absolute; top: 20px; width: 98%;">
+      <div id="tabs" class="draggable" style="float:left;">
+        <ul class="draggable-handle">
+          <li><a href="#instances">Instances</a></li>
+          <li><a href="#images">Images</a></li>
+        </ul>
+        <div id="instances">
+          <table id="instances-table" class="ui-widget" cellpadding="4px" cellspacing="0px">
+            <thead class="ui-widget-header">
+              <tr>
+                <th></th>
+                <th>id</th>
+                <th>type</th>
+                <th>image</th>
+                <th>group</th>
+                <th>state</th>
+                <th>ipaddress</th>
+              </tr>
+              </thead>
+            <tbody class="ui-widget-content"></tbody>
+          </table>
+       </div>
+        <div id="images">
+          <table id="images-table" class="ui-widget" cellpadding="4px" cellspacing="0px">
+            <thead class="ui-widget-header">
+              <tr>
+                <th></th>
+                <th>id</th>
+                <th>image</th>
+              </tr>
+            </thead>
+            <tbody class="ui-widget-content"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="sidebar" style="float:right; max-width: 384px; width: 384px;">
+        <div class="info-message ui-widget" style="width: 100%">
+          <div class="ui-widget-header ui-corner-all">
+            <span class="title">Status</span>
+          </div>
+          <div class="ui-widget-content">
+            <table id="status-table" cellspacing="0" style="width: 100%">
+              <thead class="ui-widget-header"></thead>
+              <tbody class="ui-widget-content"></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="info-messages">
+        </div>
+      </div>
+    </div>
+    <iframe id="connection" style="display:none"></iframe>
+  </body>
+</html>
