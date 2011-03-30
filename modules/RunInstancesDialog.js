@@ -77,6 +77,7 @@ define([
             return instanceChooser;
         })();
         jqRunInstances.dialog('option', 'open', function() { instanceChooser.redraw(); });
+        jqRunInstances.dialog('option', 'resize', function() { instanceChooser.redraw(); });
 
         return {
             open: function(key, callback) {
