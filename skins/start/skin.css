@@ -1,9 +1,11 @@
 @import url('jquery-ui-1.8.11.custom.css');
 
-#body { background-image: url('cloud.jpg'); background-size: cover; }
+#body { background-image: url('cloud.jpg'); background-size: 100%; }
 body { background-color: #2990BF; }
 
 .info-message { margin-top: 10px; }
 .info-message .ui-widget-content { padding: 0px 10px; }
 
 .draggable-handle { cursor: move; }
+
+.instanceImage { background: url('computer.png'); background-size: 100%; }
