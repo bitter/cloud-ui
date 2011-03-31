@@ -2,13 +2,25 @@ require({
             priority: ['jquery/jquery-1.5.1'], 
             urlArgs: "bust=" +  (new Date()).getTime() 
         },
-        ['aws/AWS', 'aws/AWSDummy','modules/jquery-ui-support', 'modules/RunInstancesDialog.js', 'modules/InfoMessage', 'jquery/jquery.ajaxTable'],
-        function (AWS, AWSDummy, $, RunInstancesDialog, InfoMessage) {
+        [
+            'modules/jquery-ui-support', 
+            'aws/AWS', 
+            'aws/AWSDummy',
+            'text!settings.json',
+            'modules/RunInstancesDialog.js', 
+            'modules/InfoMessage', 
+            'jquery/jquery.ajaxTable'],
+    function ($, AWS, AWSDummy, settingsText, RunInstancesDialog, InfoMessage) {
+
+        var settings = JSON.parse(settingsText);
 
         $('#tabs').tabs();
         $('.draggable').draggable({handle: '.draggable-handle'});
 
-        var aws = new AWSDummy();
+        var aws = !settings.ec2.dummy
+            ? new AWS(settings.ec2)
+            : new AWSDummy();
+        
         $('#connection').attr('src', aws.createURL({ action: 'DescribeAvailabilityZones', params: {'ZoneName.1': 'verbose'} }));
 
         function createEc2AjaxTab(selector, action, params, itemSelector, keySelector, valueSelectors, rowListener) {

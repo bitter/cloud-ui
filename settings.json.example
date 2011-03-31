@@ -1,0 +1,9 @@
+{
+    "ec2": {
+           "protocol" : "http",
+               "host" : "uec00:8773",
+                "uri" : "/services/Eucalyptus",
+          "accessKey" : "QKNdpiqndrqwpidnqwpEdkwqjdwQOjdqwojddj", 
+          "secretKey" : "asodnjsbaddouqbADHASsajdsadnasohASW"
+    }
+}
