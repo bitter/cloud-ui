@@ -70,8 +70,9 @@ define(['./date-format-0.9.9', './sha256', './base64'], function()
                     query.push(name + "=" + encodeURIComponent(request.params[name]));
                 }
                 var queryString = query.join("&");
-                var base64Signature = sign(request.secretKey, "GET\n" + (request.serviceHost || request.host) + "\n" + (request.serviceUri || request.uri) + "\n" + queryString);
-                return request.protocol + "://" + request.host + request.uri + "?" + queryString + "&Signature=" + encodeURIComponent(base64Signature);
+                var base64Signature = sign(request.secretKey, "GET\n" + request.host + "\n" + request.uri + "\n" + queryString);
+                var baseUrl = request.proxyUri || request.protocol + "://" + request.host + request.uri;
+                return baseUrl + "?" + queryString + "&Signature=" + encodeURIComponent(base64Signature);
             }
         };
         aws.instance_types = AWS.INSTANCE_TYPES;
