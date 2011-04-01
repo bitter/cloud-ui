@@ -40,7 +40,6 @@ define(['./date-format-0.9.9', './sha256', './base64'], function()
         }
         return base64.encode(signatureString);
     }
-    var timestamp = new Date().toFormattedString("yyyy-MM-ddThh:mm:ssZ");
     var AWS = function(config) {
 
         config = merge(config, AWS.DEFAULT_CONFIG, 2);
@@ -60,7 +59,7 @@ define(['./date-format-0.9.9', './sha256', './base64'], function()
                                            Action: request.action,
                                            SignatureMethod: 'HmacSHA256',
                                            SignatureVersion: '2',
-                                           Timestamp: timestamp,
+                                           Timestamp: new Date().toFormattedString("yyyy-MM-ddThh:mm:ssZ"),
                                            Version: '2011-01-01'
                                        }, 2);
                 var parameterNames = sortAndEvaluate(request.params);
