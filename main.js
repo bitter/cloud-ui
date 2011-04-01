@@ -38,7 +38,7 @@ require({ priority: ['jquery/jquery-1.5.1'], urlArgs: "bust=" +  (new Date()).ge
         var imagesTable = createEc2AjaxTab("#images-table", "DescribeImages", { 'Owner': ['self'] }, 'item', columns, function(key, row) {
             $("<span class='ui-icon ui-icon-circle-triangle-e' />").appendTo($("<td>").prependTo(row)).click(function() {
                 runInstancesDialog.open(key, function(result) {
-                    instanceTable.awsTable.awsTable('refresh');
+                    instanceTable.awsTable('refresh');
                     $('#tabs').tabs('select', '#instances');
                 });
             });
