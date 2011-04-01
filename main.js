@@ -1,7 +1,4 @@
-require({
-            priority: ['jquery/jquery-1.5.1'], 
-            urlArgs: "bust=" +  (new Date()).getTime() 
-        },
+require({ priority: ['jquery/jquery-1.5.1'], urlArgs: "bust=" +  (new Date()).getTime() },
         [
             'modules/jquery-ui-support', 
             'aws/AWS', 
@@ -9,7 +6,7 @@ require({
             'text!settings.json',
             'modules/RunInstancesDialog.js', 
             'modules/InfoMessage', 
-            'jquery/jquery.ajaxTable'],
+            'modules/jquery.ui.awsTable'],
     function ($, AWS, AWSDummy, settingsText, RunInstancesDialog, InfoMessage) {
 
         var settings = JSON.parse(settingsText);
@@ -23,41 +20,33 @@ require({
         
         $('#connection').attr('src', aws.createURL({ action: 'DescribeAvailabilityZones', params: {'ZoneName.1': 'verbose'} }));
 
-        function createEc2AjaxTab(selector, action, params, itemSelector, keySelector, valueSelectors, rowListener) {
-            return $(selector).ajaxTable(function(callback) {
-                aws.invoke({ action: action, params: params, success: function(result) {
-                    var items = [];
-                    $(itemSelector, result).each(function(_, itemXML) {
-                        var $item = $(itemXML);
-                        var tablerow = [];
-                        tablerow.key = $(keySelector, $item).text();
-                        valueSelectors.forEach(function(valueSelector) {
-                            tablerow.push($(valueSelector, $item).text());
-                        });
-                        items.push(tablerow);
-                    });
-                    callback(10000, items);
-                    
-                }, error: function() {
-                    callback(5000);
-                }});
-            }, rowListener);
+        function createEc2AjaxTab(selector, action, params, itemSelector, valueSelectors, rowListener) {
+            return $(selector).awsTable({
+                                            aws: aws, 
+                                            action: action, 
+                                            parameters: params, 
+                                            itemSelector: itemSelector, 
+                                            valueSelectors: valueSelectors, 
+                                            rowModifier: rowListener, 
+                                            autoRefresh: 10000
+                                        });
         }
 
         var runInstancesDialog = new RunInstancesDialog(aws);
         var columns;
         columns = ['imageId', 'imageLocation'];
-        var imagesTable = createEc2AjaxTab("#images-table", "DescribeImages", { 'Owner': ['self'] }, 'item', 'imageId', columns, function(key, row) {
+        var imagesTable = createEc2AjaxTab("#images-table", "DescribeImages", { 'Owner': ['self'] }, 'item', columns, function(key, row) {
             $("<span class='ui-icon ui-icon-circle-triangle-e' />").appendTo($("<td>").prependTo(row)).click(function() {
                 runInstancesDialog.open(key, function(result) {
-                    instanceTable.ajaxTable.refresh();
+                    instanceTable.awsTable.awsTable('refresh');
                     $('#tabs').tabs('select', '#instances');
                 });
             });
+            return row;
         });
 
         columns = ['instanceId', 'instanceType', 'imageId', 'keyName', 'instanceState > name', 'dnsName'];
-        var instanceTable = createEc2AjaxTab("#instances-table", "DescribeInstances", {  }, 'instancesSet > item', 'instanceId', columns , function(key, row) {
+        var instanceTable = createEc2AjaxTab("#instances-table", "DescribeInstances", {  }, 'instancesSet > item', columns , function(key, row) {
             $("<span class='ui-icon ui-icon-circle-close' />").appendTo($("<td>").prependTo(row)).click(function() {
                 new InfoMessage('Terminate Instance', $("<p>Terminating <b>" + key + "</b></p>"), 10000);
                 aws.invoke({ 
@@ -71,7 +60,7 @@ require({
                                    });
                                    infoMessage += "</p>";
                                    new InfoMessage('Terminate Instances', $(infoMessage), 10000);
-                                   instanceTable.ajaxTable.refresh();
+                                   instanceTable.awsTable('refresh');
                                    $('#tabs').tabs('select', '#instances');
                                }, 
                                error: function(result) {
@@ -79,9 +68,9 @@ require({
                                } 
                            });
             });
-        });        
+            return row;
+        });
 
         columns = ['zoneName', 'zoneState' ];
-        createEc2AjaxTab("#status-table", "DescribeAvailabilityZones", { ZoneName: ['verbose'] }, 'availabilityZoneInfo > item', 'zoneName', columns , function(key, row) {
-    });
+        var status = createEc2AjaxTab("#status-table", "DescribeAvailabilityZones", { ZoneName: ['verbose'] }, 'availabilityZoneInfo > item', columns);
 });
