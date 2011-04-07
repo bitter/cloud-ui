@@ -21,7 +21,7 @@ require({ priority: ['jquery/jquery-1.5.1'], urlArgs: "bust=" +  (new Date()).ge
         $('#connection').attr('src', aws.createURL({ action: 'DescribeAvailabilityZones', params: {'ZoneName.1': 'verbose'} }));
 
         function createEc2AjaxTab(selector, action, params, itemSelector, valueSelectors, rowListener) {
-            return $(selector).awsTable({
+            return $(selector + " > tbody").awsTable({
                                             aws: aws, 
                                             action: action, 
                                             parameters: params, 
