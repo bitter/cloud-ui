@@ -1,1 +1,33 @@
-<DescribeAvailabilityZonesResponse xmlns="http://ec2.amazonaws.com/doc/2011-01-01/"><requestId>fff0af70-992b-479f-8cc2-b870a995faed</requestId><availabilityZoneInfo><item><zoneName>cluster1</zoneName><zoneState>172.31.252.130</zoneState></item><item><zoneName>|- vm types</zoneName><zoneState>free / max   cpu   ram  disk</zoneState></item><item><zoneName>|- m1.small</zoneName><zoneState>0002 / 0006   1   1792    25</zoneState></item><item><zoneName>|- m1.large</zoneName><zoneState>0001 / 0003   2   3584    25</zoneState></item><item><zoneName>|- c1.medium</zoneName><zoneState>0001 / 0003   2   3584    25</zoneState></item><item><zoneName>|- m1.xlarge</zoneName><zoneState>0000 / 0001   2   7168    25</zoneState></item><item><zoneName>|- c1.xlarge</zoneName><zoneState>0000 / 0001   4   7168    25</zoneState></item></availabilityZoneInfo></DescribeAvailabilityZonesResponse>
+<DescribeAvailabilityZonesResponse xmlns="http://ec2.amazonaws.com/doc/2011-01-01/">
+  <requestId>fff0af70-992b-479f-8cc2-b870a995faed</requestId>
+  <availabilityZoneInfo>
+    <item>
+      <zoneName>cluster1</zoneName>
+      <zoneState>172.31.252.130</zoneState>
+    </item>
+    <item>
+      <zoneName>|- vm types</zoneName>
+      <zoneState>free / max   cpu   ram  disk</zoneState>
+    </item>
+    <item>
+      <zoneName>|- m1.small</zoneName>
+      <zoneState>0002 / 0006   1   1792    25</zoneState>
+    </item>
+    <item>
+      <zoneName>|- m1.large</zoneName>
+      <zoneState>0001 / 0003   2   3584    25</zoneState>
+    </item>
+    <item>
+      <zoneName>|- c1.medium</zoneName>
+      <zoneState>0001 / 0003   2   3584    25</zoneState>
+    </item>
+    <item>
+      <zoneName>|- m1.xlarge</zoneName>
+      <zoneState>0000 / 0001   2   7168    25</zoneState>
+    </item>
+    <item>
+      <zoneName>|- c1.xlarge</zoneName>
+      <zoneState>0000 / 0001   4   7168    25</zoneState>
+    </item>
+  </availabilityZoneInfo>
+</DescribeAvailabilityZonesResponse>
