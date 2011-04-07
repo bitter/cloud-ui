@@ -45,14 +45,14 @@ define(['./date-format-0.9.9', './sha256', './base64'], function()
         config = merge(config, AWS.DEFAULT_CONFIG, 2);
         var aws = {
 
-            invoke: function(request, callback) {
+            invoke: function(request) {
                 return $.ajax({
-                           url: aws.createURL(request, callback),
+                           url: aws.createURL(request),
                            success: request.success,
                            error: request.error
                        });
             },
-            createURL: function(request, callback) {
+            createURL: function(request) {
                 request = merge(request, config, 2);
                 request.params = merge(request.params, {
                                            AWSAccessKeyId: request.accessKey,
