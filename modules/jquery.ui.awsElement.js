@@ -1,4 +1,4 @@
-define(['./jquery-ui-support', './jquery.childUpdate', './jquery.pjstApply', 'jquery/jquery.xml2json'], function($) {
+define(['./jquery-ui-widget-support', './jquery.childUpdate', './jquery.pjstApply', 'jquery/jquery.xml2json'], function($) {
 
      var null_callbacks = {
          success: function() {},

@@ -1,4 +1,4 @@
-define(['./jquery-ui-support'], function($) {
+define(['./jquery-support'], function($) {
 
      var settings = {
          keyColumnIndex: 0,

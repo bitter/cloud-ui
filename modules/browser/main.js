@@ -1,12 +1,17 @@
-require({ priority: ['jquery/jquery-1.5.1'], urlArgs: "bust=" +  (new Date()).getTime() },
+require({ 
+            baseUrl: '.',
+            priority: ['jquery/jquery-1.5.1'], 
+            urlArgs: "bust=" +  (new Date()).getTime() 
+        },
         [
-            'modules/jquery-ui-support', 
+            'modules/browser/jquery-ui-support', 
             'aws/AWS', 
             'aws/AWSDummy',
             'text!settings.json',
-            'modules/RunInstancesDialog.js', 
-            'modules/InfoMessage', 
-            'modules/jquery.ui.awsTable'],
+            'modules/browser/RunInstancesDialog', 
+            'modules/browser/InfoMessage', 
+            'modules/jquery.ui.awsTable'
+        ],
     function ($, AWS, AWSDummy, settingsText, RunInstancesDialog, InfoMessage) {
 
         var settings = JSON.parse(settingsText);

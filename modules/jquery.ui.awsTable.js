@@ -1,4 +1,4 @@
-define(['./jquery-ui-support', './jquery.ui.awsElement'], function($) {
+define(['./jquery-ui-widget-support', './jquery.ui.awsElement'], function($) {
 
      $.widget("ui.awsTable", $.ui.awsElement,
      {

@@ -8,7 +8,7 @@
  * way I've done it, but if not: Muhammad come get me ;)
  * 
  **/
-define(['./jquery-ui-support'], function($) {
+define(['./jquery-support'], function($) {
 
      function stringStartsWith(str, startsWith) {
 	 return str.substring(0, startsWith.length)==startsWith;
