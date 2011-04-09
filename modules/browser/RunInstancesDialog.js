@@ -1,9 +1,11 @@
 define([
-           './jquery-ui-support', 
+           './jquery-ui-support',
            'text!./html/RunInstancesDialog.html!strip',
-           './InfoMessage', 
-           './ProgressDialog', 
-           './ErrorDialog'], 
+           './InfoMessage',
+           './ProgressDialog',
+           './ErrorDialog',
+           '../jquery.ui.iconResizeMultiplier'
+       ], 
        function ($, TEMPLATE, InfoMessage, ProgressDialog, ErrorDialog) 
 {
     return function(aws) {
@@ -12,19 +14,21 @@ define([
         
         var instanceChooser = (function() {
 
-            var jqInstanceBox = $('.instances');
-            var jqInstanceImage = $('.instanceImage', jqRunInstances).first();
+            var jqInstanceBox = $('.instances').iconResizeMultiplier({
+                maxSize: aws.instance_types.length,
+                icon: $("<span class='instanceImage'>")
+            });
             var jqInstanceType = $(".instanceTypeSlider", jqRunInstances).slider({
-                orientation: "vertical", 
-                range: "min", 
-                min: 0, 
+                orientation: "vertical",
+                range: "min",
+                min: 0,
                 value: 1, max: aws.instance_types.length - 1,
                 slide: function(_, ui) { 
                     instanceChooser.redraw(ui.value, undefined);
                 } 
             });
             var jqNumberOfInstances = $(".numberOfInstancesSlider", jqRunInstances).slider({
-                range: "min", 
+                range: "min",
                 min: 1, 
                 max: 20, 
                 slide: function(_, ui) { 
@@ -40,44 +44,27 @@ define([
                     return jqNumberOfInstances.slider('value');
                 },
                 redraw: function(instanceType, numberOfInstances) {
-                    instanceType = instanceType != undefined ? instanceType : instanceChooser.instanceType();
-                    numberOfInstances = numberOfInstances != undefined ? numberOfInstances : instanceChooser.numberOfInstances();
 
-                    // Add or remove instances
-                    var jqInstanceImages = $(".instanceImage", jqRunInstances), currentNumberOfInstances = jqInstanceImages.length;
-                    for (; currentNumberOfInstances < numberOfInstances; currentNumberOfInstances++) {
-                        jqInstanceImage.clone().appendTo(jqInstanceBox);
+                    if (instanceType === undefined && numberOfInstances === undefined) {
+                        instanceType = jqInstanceType.slider('value');
+                        numberOfInstances = jqNumberOfInstances.slider('value');
                     }
-                    for (; currentNumberOfInstances > numberOfInstances; currentNumberOfInstances--) {
-                        $(".instanceImage", jqRunInstances).last().remove();
-                    }
-             
-                    // Calculate instance images size and positions
-                    var imageWidth = 64 + (196 / aws.instance_types.length * instanceType), imageHeight = imageWidth;
-                    
-                    var maxImageHeight = (jqInstanceBox.height() - imageHeight), imageOffsetY = -maxImageHeight / 2;
-                    var maxImageWidth = (jqInstanceBox.width() - imageWidth) / numberOfInstances, imageOffsetX = maxImageWidth / 2;
-                    $(".instanceImage", jqRunInstances).each(function(index, instance)
-                    {
-                        var adjustmentX = maxImageWidth * index + imageOffsetX + jqInstanceBox.position().left;
-                        var adjustmentY = maxImageHeight * 1 + imageOffsetY + jqInstanceBox.position().top;
-                        $(instance).css({
-                                            left: adjustmentX + "px",
-                                            top: adjustmentY + "px",
-                                            width: imageWidth,
-                                            height: imageWidth,
-                                            'z-index': -index
-                                        });
-                    });
-                    $(".instanceTypeText").text(aws.instance_types[instanceType].label + " x " + numberOfInstances);
+
+                    if (instanceType !== undefined) { 
+                        jqInstanceBox.iconResizeMultiplier('sizeOfIcons', instanceType + 1); 
+                    } else if (numberOfInstances !== undefined) {
+                        jqInstanceBox.iconResizeMultiplier('numberOfIcons', numberOfInstances); 
+                    } 
+                    jqInstanceBox.iconResizeMultiplier('redraw');
+                    $(".instanceTypeText").text(aws.instance_types[jqInstanceBox.iconResizeMultiplier('sizeOfIcons') - 1].label + " x " + jqInstanceBox.iconResizeMultiplier('numberOfIcons'));
                 }
             };
-            
 
             return instanceChooser;
         })();
         jqRunInstances.dialog('option', 'open', function() { instanceChooser.redraw(); });
         jqRunInstances.dialog('option', 'resize', function() { instanceChooser.redraw(); });
+        instanceChooser.redraw();
 
         return {
             open: function(key, callback) {
