@@ -9,7 +9,7 @@ define(['./jquery-ui-widget-support', './jquery.pjstApply'], function($) {
              maxSize: 1,
              size: 1,
              numberOfIcons: 1,
-             zIndex: 1,
+             zIndex: this.numberOfIcons,
              zIndexer: -1
          },
          _create: function() {
