@@ -40,7 +40,7 @@ require({
         var runInstancesDialog = new RunInstancesDialog(aws);
         var columns;
         columns = ['imageId', 'imageLocation'];
-        var imagesTable = createEc2AjaxTab("#images-table", "DescribeImages", { 'Owner': ['self'] }, 'item', columns, function(key, row) {
+        var imagesTable = createEc2AjaxTab("#images-table", "DescribeImages", { 'Owner': ['self'] }, 'item', columns, function(key, data, row) {            
             $("<span class='ui-icon ui-icon-circle-triangle-e' />").appendTo($("<td>").prependTo(row)).click(function() {
                 runInstancesDialog.open(key, function(result) {
                     instanceTable.awsTable('refresh');
@@ -51,7 +51,7 @@ require({
         });
 
         columns = ['instanceId', 'instanceType', 'imageId', 'keyName', 'instanceState > name', 'dnsName'];
-        var instanceTable = createEc2AjaxTab("#instances-table", "DescribeInstances", {  }, 'instancesSet > item', columns , function(key, row) {
+        var instanceTable = createEc2AjaxTab("#instances-table", "DescribeInstances", {  }, 'instancesSet > item', columns , function(key, data, row) {
             $("<span class='ui-icon ui-icon-circle-close' />").appendTo($("<td>").prependTo(row)).click(function() {
                 new InfoMessage('Terminate Instance', $("<p>Terminating <b>" + key + "</b></p>"), 10000);
                 aws.invoke({ 

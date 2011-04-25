@@ -6,7 +6,7 @@ define(['./jquery-ui-widget-support', './jquery.ui.awsElement'], function($) {
          options: {
              keySelector: undefined,
              valueSelectors: [],
-             rowModifier: function(key, row) { return row; }
+             rowModifier: function(key, jqItem, jqRow) { return jqRow; }
          },
          _create: function() {
              var self = this;
@@ -16,7 +16,7 @@ define(['./jquery-ui-widget-support', './jquery.ui.awsElement'], function($) {
                  self.options.valueSelectors.forEach(function(valueSelector) {
                      $('<td>').text($(valueSelector, jqItem).text()).appendTo(jqRow);
                  });
-                 return self.options.rowModifier(key, jqRow);
+                 return self.options.rowModifier(key, jqItem, jqRow);
              };
              $.ui.awsElement.prototype._create.call(this);
          }
