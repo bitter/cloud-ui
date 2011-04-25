@@ -44,7 +44,8 @@ define(['./date-format-0.9.9', './sha256', './base64'], function()
 
         config = merge(config, AWS.DEFAULT_CONFIG, 2);
         var aws = {
-
+            instance_types: AWS.INSTANCE_TYPES,
+            config: config,
             invoke: function(request) {
                 return $.ajax({
                            url: aws.createURL(request),
@@ -52,18 +53,23 @@ define(['./date-format-0.9.9', './sha256', './base64'], function()
                            error: request.error
                        });
             },
+            formatDate: function(date, format) {
+                return date.toFormattedString(format || aws.config.date_format);
+            },
+            parseDate: function(string) {
+                return Date.parseFormatted(string, aws.config.date_format);
+            },
             createURL: function(request) {
-                request = merge(request, config, 2);
+                request = merge(request, aws.config, 2);
                 request.params = merge(request.params, {
                                            AWSAccessKeyId: request.accessKey,
                                            Action: request.action,
                                            SignatureMethod: 'HmacSHA256',
                                            SignatureVersion: '2',
-                                           Timestamp: new Date().toFormattedString("yyyy-MM-ddThh:mm:ssZ"),
+                                           Timestamp: this.formatDate(new Date()),
                                            Version: '2011-01-01'
                                        }, 2);
                 var parameterNames = sortAndEvaluate(request.params);
-
                 var query = [];
                 for (var i in parameterNames) {
                     var name = parameterNames[i];
@@ -75,7 +81,6 @@ define(['./date-format-0.9.9', './sha256', './base64'], function()
                 return baseUrl + "?" + queryString + "&Signature=" + encodeURIComponent(base64Signature);
             }
         };
-        aws.instance_types = AWS.INSTANCE_TYPES;
 
         return aws;
     };
@@ -83,7 +88,8 @@ define(['./date-format-0.9.9', './sha256', './base64'], function()
     AWS.DEFAULT_CONFIG = {
         protocol: 'https',
         host: 'ec2.amazonaws.com',
-        uri: '/'
+        uri: '/',
+        date_format: 'yyyy-MM-ddThh:mm:ss.zZ'
     };
 
     AWS.INSTANCE_TYPES = [

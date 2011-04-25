@@ -52,6 +52,28 @@ require({
 
         columns = ['instanceId', 'instanceType', 'imageId', 'keyName', 'instanceState > name', 'dnsName'];
         var instanceTable = createEc2AjaxTab("#instances-table", "DescribeInstances", {  }, 'instancesSet > item', columns , function(key, data, row) {
+            var uptimeTd = $("<td>").appendTo(row);
+            var launchTimeStr = $('launchTime', data).text();
+            if (launchTimeStr) {
+                var nowTimeDate = new Date();
+                var nowTime = nowTimeDate.getTime() + nowTimeDate.getTimezoneOffset() * 60000;
+                var launchTime = aws.parseDate(launchTimeStr).getTime();
+                var uptime = parseInt((nowTime - launchTime) / 1000);
+                var uptimeString = (uptime % 60) + " sec ";
+                var uptimeMinutes = parseInt(uptime / 60);
+                if (uptimeMinutes) {
+                    uptimeString = (uptimeMinutes % 60) + " min ";
+                }
+                var uptimeHours = parseInt(uptimeMinutes / 60);
+                if (uptimeHours) {
+                    uptimeString += (uptimeHours % 60) + " hours ";
+                }
+                var uptimeDays = parseInt(uptimeHours / 24);
+                if (uptimeDays) {
+                    uptimeString += uptimeDays + " days ";
+                }
+                uptimeTd.text(uptimeString);
+            }
             $("<span class='ui-icon ui-icon-circle-close' />").appendTo($("<td>").prependTo(row)).click(function() {
                 new InfoMessage('Terminate Instance', $("<p>Terminating <b>" + key + "</b></p>"), 10000);
                 aws.invoke({ 
