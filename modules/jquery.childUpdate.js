@@ -16,17 +16,17 @@ define(['./jquery-support'], function($) {
              var options = $.extend({}, settings, options);
              return this.data('childUpdate.options', options);
          },
-         elements: function(elements) {
+         elements: function(jqElementsArray) {
 
-             var options = this.data('childUpdate.options'), jqElements = $(elements);
-             function resolveKey(element) {
-                 return element.attr('key');
+             var options = this.data('childUpdate.options');
+             function resolveKey(jqElement) {
+                 return jqElement.attr('key');
              }
 
              var newElements = {};
-             if (jqElements) {
-                 jqElements.each(function(_, element) {
-                     newElements[resolveKey(element)] = element;
+             if (jqElementsArray) {
+                 jqElementsArray.forEach(function(jqElement) {
+                     newElements[resolveKey(jqElement)] = jqElement;
                  });
                  $(this).children().each(function(_, element) {
                      var jqElement = $(element);

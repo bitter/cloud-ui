@@ -41,7 +41,7 @@ define(['./jquery-ui-widget-support', './jquery.childUpdate', './jquery.pjstAppl
              options.aws.invoke({ action: options.action, params: options.parameters, success: function(data, textStatus, jqXHR) {
                  var items = $(options.itemSelector, data).map(function(_, itemXML) {
                      return options.itemGenerator.call(self, itemXML);
-                 });
+                 }).toArray();
                  jqElement.childUpdate('elements', items);
                  options.success.call(jqElement, data, textStatus, jqXHR);
              }, 
