@@ -66,7 +66,7 @@ require({
                 }
                 var uptimeHours = parseInt(uptimeMinutes / 60);
                 if (uptimeHours) {
-                    uptimeString += (uptimeHours % 60) + " hours ";
+                    uptimeString += (uptimeHours % 24) + " hours ";
                 }
                 var uptimeDays = parseInt(uptimeHours / 24);
                 if (uptimeDays) {
