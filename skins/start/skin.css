@@ -10,6 +10,18 @@ body { background-color: #2990BF; }
 
 .instanceImage { background: url('computer.png'); background-size: 100%; }
 
+@-webkit-keyframes fadeout-selection {
+    0% { background: none; }
+    12% { background: #CBD9FE; }
+    25% { background: none; }
+    37% { background: #CBD9FE; }
+    50% { background: none; }
+    62% { background: #CBD9FE; }
+    75% { background: none; }
+    87% { background: #CBD9FE; }
+    100% { background: none; }
+}
+
 @-webkit-keyframes fadeout {
     0% { opacity: 1.0; }
     100% { opacity: 0.0; }
@@ -18,6 +30,13 @@ body { background-color: #2990BF; }
 tr.deleted {
     background: #eee;
     -webkit-animation-name: fadeout;
+    -webkit-animation-duration: 5s;
+    -webkit-animation-timing-function: ease-in;
+}
+
+
+tr.added {
+    -webkit-animation-name: fadeout-selection;
     -webkit-animation-duration: 5s;
     -webkit-animation-timing-function: ease-in;
 }

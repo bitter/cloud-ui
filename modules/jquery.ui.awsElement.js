@@ -57,6 +57,7 @@ define(['./jquery-ui-widget-support', './jquery.childUpdate', './jquery.pjstAppl
                      return options.itemGenerator.call(self, itemXML);
                  }).toArray();
                  jqElement.childUpdate('elements', items);
+                 jqElement.childUpdate({'tagAddedElements': true});
                  options.success.call(jqElement, data, textStatus, jqXHR);
                  resetTimeout(self);
              }, 

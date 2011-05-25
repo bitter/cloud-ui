@@ -2,6 +2,7 @@ define(['./jquery-support'], function($) {
 
      var settings = {
          keyColumnIndex: 0,
+         tagAddedElements: false,
          deletechild: function() {
              var child = this;
              function removeElement() {
@@ -45,7 +46,10 @@ define(['./jquery-support'], function($) {
                  });
 
                  for (var key in newElements) {
-                     newElements[key].appendTo(this);
+                     var newElement = newElements[key].appendTo(this);
+                     if (options.tagAddedElements) {
+                         newElement.addClass('added');
+                     }
                  }
              }
              return this;
