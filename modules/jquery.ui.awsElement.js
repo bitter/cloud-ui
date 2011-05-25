@@ -5,6 +5,17 @@ define(['./jquery-ui-widget-support', './jquery.childUpdate', './jquery.pjstAppl
          error: function() {}
      };
 
+     function clearTimeout(awsElement) {
+         awsElement._timerId && clearTimeout(awsElement._timerId);
+     }
+
+     function resetTimeout(awsElement) {
+         clearTimeout(awsElement);
+         awsElement._timerId = setTimeout(function() {
+             awsElement.refresh();
+         }, awsElement.options.autoRefresh);
+     }
+
      $.widget("ui.awsElement",
      {
          // default options
@@ -25,42 +36,34 @@ define(['./jquery-ui-widget-support', './jquery.childUpdate', './jquery.pjstAppl
              this.element.addClass("ui-awselement ui-widget");             
              this.element.childUpdate();
              this.refresh();
-             this.autoRefresh(this.options.autoRefresh);
          },
 	 _destroy: function() {
 	     this.element.removeClass( "ui-awselement ui-widget" );
 	 },
          _setOption: function(key, value) {
-	     if (key === 'autoRefresh') {
-                 this.autoRefresh(value);
-	     }
-	     return this._super('_setOption', key, value);
-	 },         
+             try {
+                 return this._super('_setOption', key, value);
+             } finally {
+	         if (key === 'autoRefresh') {
+                     resetTimeout(this);
+	         }
+             }
+	 },
          refresh: function() {
              var self = this, options = self.options, jqElement = self.element;
+             clearTimeout(self);
              options.aws.invoke({ action: options.action, params: options.parameters, success: function(data, textStatus, jqXHR) {
                  var items = $(options.itemSelector, data).map(function(_, itemXML) {
                      return options.itemGenerator.call(self, itemXML);
                  }).toArray();
                  jqElement.childUpdate('elements', items);
                  options.success.call(jqElement, data, textStatus, jqXHR);
+                 resetTimeout(self);
              }, 
              error: function(jqXHR, textStatus, errorThrown) {
                  options.error.call(jqElement, jqXHR, textStatus, errorThrown);
+                 resetTimeout(self);
              }});
-             return this;
-         },
-         autoRefresh: function(frequency) {
-             var jqElement = this;
-             if (frequency) {
-                 function invokeRefresh() {
-                     jqElement.refresh();
-                 }
-                 jqElement._timerId = setInterval(invokeRefresh, frequency);
-
-             } else if (jqElement._timerId) {
-                 clearInterval(jqElement._timerId);
-             }
              return this;
          }
      });
