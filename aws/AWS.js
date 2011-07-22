@@ -1,10 +1,7 @@
 define(['./date-format-0.9.9', './sha256', './base64'], function() 
 {
-    function merge(config, defaults, depth) {
-        if (config && depth)
-            for (var key in defaults)
-                config[key] = merge(config[key], defaults[key], depth - 1);
-        return config == undefined ? defaults : config;
+    function merge(config, defaults) {
+        return $.extend(true, {}, defaults, config);
     }
 
     function sortAndEvaluate(parameters) {
@@ -42,7 +39,7 @@ define(['./date-format-0.9.9', './sha256', './base64'], function()
     }
     var AWS = function(config) {
 
-        config = merge(config, AWS.DEFAULT_CONFIG, 2);
+        config = merge(config, AWS.DEFAULT_CONFIG);
         var aws = {
             instance_types: AWS.INSTANCE_TYPES,
             config: config,
@@ -60,7 +57,7 @@ define(['./date-format-0.9.9', './sha256', './base64'], function()
                 return Date.parseFormatted(string, aws.config.date_format);
             },
             createURL: function(request) {
-                request = merge(request, aws.config, 2);
+                request = merge(request, aws.config);
                 request.params = merge(request.params, {
                                            AWSAccessKeyId: request.accessKey,
                                            Action: request.action,
@@ -68,7 +65,7 @@ define(['./date-format-0.9.9', './sha256', './base64'], function()
                                            SignatureVersion: '2',
                                            Timestamp: this.formatDate(new Date()),
                                            Version: '2011-01-01'
-                                       }, 2);
+                                       });
                 var parameterNames = sortAndEvaluate(request.params);
                 var query = [];
                 for (var i in parameterNames) {
