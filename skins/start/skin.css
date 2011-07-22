@@ -1,7 +1,31 @@
 @import url('jquery-ui-1.8.11.custom.css');
 
-#body { background-image: url('cloud.jpg'); background-size: 100%; }
-body { background-color: #2990BF; }
+/*---------------------------------------------------------------------*/
+@-webkit-keyframes flash-selection {
+    0% { background: none; }
+    50% { background: #CCE6FF; }
+    100% { background: none; }
+}
+
+@-webkit-keyframes fadeout {
+    0% { opacity: 1.0; }
+    100% { opacity: 0.0; }
+}
+
+@-webkit-keyframes flash {
+    0% { opacity: 0.0; }
+    50% { opacity: 1.0; }
+    100% { opacity: 0.0; }
+}
+
+/*---------------------------------------------------------------------*/
+
+
+body {
+    font-size: 11px;
+    background-color: #2990BF;
+    background-size: 100%;
+}
 
 .info-message { margin-top: 10px; }
 .info-message .ui-widget-content { padding: 0px 10px; }
@@ -10,21 +34,47 @@ body { background-color: #2990BF; }
 
 .instanceImage { background: url('computer.png'); background-size: 100%; }
 
-@-webkit-keyframes fadeout-selection {
-    0% { background: none; }
-    12% { background: #CBD9FE; }
-    25% { background: none; }
-    37% { background: #CBD9FE; }
-    50% { background: none; }
-    62% { background: #CBD9FE; }
-    75% { background: none; }
-    87% { background: #CBD9FE; }
-    100% { background: none; }
+#toolbar {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    padding: 5px;
+    background: black;
+    font-size: 1.5em;
+    color: white;
+    opacity: 0.7;
+    z-index: 10000;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
-@-webkit-keyframes fadeout {
-    0% { opacity: 1.0; }
-    100% { opacity: 0.0; }
+button.refresh-ec2-table {
+    float: right;
+    background: url('refresh.png') no-repeat;
+    border: none;
+    width: 64px;
+    height: 54px;
+}
+
+p.refresh-ec2-table-status {
+    margin: 0px;
+}
+
+p.refresh-ec2-table-status.success {
+    color: #2990BF;
+}
+
+p.refresh-ec2-table-status.error {
+    color: red;
+}
+
+p.refresh-ec2-table-status.refresh {
+    color: #000;
+    -webkit-animation-name: flash;
+    -webkit-animation-duration: 2s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: ease-in-out;
 }
 
 tr.deleted {
@@ -36,7 +86,8 @@ tr.deleted {
 
 
 tr.added {
-    -webkit-animation-name: fadeout-selection;
-    -webkit-animation-duration: 5s;
+    -webkit-animation-name: flash-selection;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: 5;
     -webkit-animation-timing-function: ease-in;
 }

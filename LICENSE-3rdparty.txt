@@ -1,5 +1,6 @@
 INDEX:
 
+ > Libraries
  * RequireJS                    0.24.0   MIT
  * jQuery                       1.5.1    MIT
  * jQuery UI                    1.8.11   MIT
@@ -8,6 +9,9 @@ INDEX:
  * base64                       -        MIT
  * JS Date Format Patch         0.9.9    MIT
  * sha256                       -        GPL
+
+ > Graphics
+ * See skins/*/LICENSE-3rdparty.txt
 
 
 RequireJS - http://requirejs.org/
