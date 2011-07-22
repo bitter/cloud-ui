@@ -10,9 +10,15 @@ require({
             'text!settings.json',
             'modules/browser/RunInstancesDialog', 
             'modules/browser/InfoMessage', 
-            'modules/jquery.ui.awsTable'
+            'modules/jquery.ui.awsTable',
+            'jquery/jquery.tablesorter'
         ],
     function ($, AWS, AWSDummy, settingsText, RunInstancesDialog, InfoMessage) {
+
+        var strings = {
+            refresh: "Updating table data...",
+            error: "Unable to retrieve data from server"
+        };
 
         var settings = JSON.parse(settingsText);
 
@@ -26,21 +32,38 @@ require({
         $('#connection').attr('src', aws.createURL({ action: 'DescribeAvailabilityZones', params: {'ZoneName.1': 'verbose'} }));
 
         function createEc2AjaxTab(selector, action, params, itemSelector, valueSelectors, rowListener) {
-            return $(selector + " > tbody").awsTable({
-                                            aws: aws, 
-                                            action: action, 
-                                            parameters: params, 
-                                            itemSelector: itemSelector, 
-                                            valueSelectors: valueSelectors, 
-                                            rowModifier: rowListener, 
-                                            autoRefresh: 10000
-                                        });
+            var awsTable = $(selector + " > tbody").awsTable({
+                                                                 aws: aws,
+                                                                 action: action,
+                                                                 parameters: params,
+                                                                 itemSelector: itemSelector,
+                                                                 valueSelectors: valueSelectors,
+                                                                 rowModifier: rowListener,
+                                                                 autoRefresh: 60000
+                                                             });
+            var table = awsTable.parent('table');
+            table.tablesorter();
+            $(".refresh-ec2-table").click(function() {
+                awsTable.awsTable('refresh');
+            });
+            var info = $(".refresh-ec2-table-status");
+            awsTable.awsTable('refresh', function(event) {
+                info.removeClass('refresh success error');
+                if (event == 'success') {
+                    table.trigger('update');
+                    info.text(aws.formatDate(new Date(), "ddd dd MMM hh:mm:ss"));
+                } else {
+                    info.text(strings[event]);
+                }
+                info.addClass(event);
+            });
+            return awsTable;
         }
 
         var runInstancesDialog = new RunInstancesDialog(aws);
         var columns;
         columns = ['imageId', 'imageLocation'];
-        var imagesTable = createEc2AjaxTab("#images-table", "DescribeImages", { 'Owner': ['self'] }, 'item', columns, function(key, data, row) {            
+        var imagesTable = createEc2AjaxTab("#images-table", "DescribeImages", { 'Owner': ['self'] }, 'item', columns, function(key, data, row) {
             $("<span class='ui-icon ui-icon-circle-triangle-e' />").appendTo($("<td>").prependTo(row)).click(function() {
                 runInstancesDialog.open(key, function(result) {
                     instanceTable.awsTable('refresh');

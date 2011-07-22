@@ -1,16 +1,11 @@
 define(['./jquery-ui-widget-support', './jquery.childUpdate', './jquery.pjstApply', 'jquery/jquery.xml2json'], function($) {
 
-     var null_callbacks = {
-         success: function() {},
-         error: function() {}
-     };
-
-     function clearTimeout(awsElement) {
+     function clearPreviousTimeout(awsElement) {
          awsElement._timerId && clearTimeout(awsElement._timerId);
      }
 
      function resetTimeout(awsElement) {
-         clearTimeout(awsElement);
+         clearPreviousTimeout(awsElement);
          awsElement._timerId = setTimeout(function() {
              awsElement.refresh();
          }, awsElement.options.autoRefresh);
@@ -28,11 +23,10 @@ define(['./jquery-ui-widget-support', './jquery.childUpdate', './jquery.pjstAppl
              itemTemplate: $("<p key='{:=JSON.stringify(data)]_'>_[=JSON.stringify(data):}</p>"),
              itemGenerator: function(xmlItem) {
                  return this.options.itemTemplate.pjstApply($.xml2json(xmlItem));
-             },
-             success: function() {},
-             error: function() {}
+             }
          },
          _create: function() {
+             this._listeners = [];
              this.element.addClass("ui-awselement ui-widget");             
              this.element.childUpdate();
              this.refresh();
@@ -49,20 +43,33 @@ define(['./jquery-ui-widget-support', './jquery.childUpdate', './jquery.pjstAppl
 	         }
              }
 	 },
-         refresh: function() {
+         _fire: function() {
+             var event = arguments;
+             this._listeners.forEach(function(listener) {
+                 listener.apply(this, event);
+             });
+         },
+         refresh: function(listener) {
+
+             if (listener) {
+                 this._listeners.push(listener);
+                 return this;
+             }
+
              var self = this, options = self.options, jqElement = self.element;
-             clearTimeout(self);
+             self._fire('refresh');
+             clearPreviousTimeout(self);
              options.aws.invoke({ action: options.action, params: options.parameters, success: function(data, textStatus, jqXHR) {
                  var items = $(options.itemSelector, data).map(function(_, itemXML) {
                      return options.itemGenerator.call(self, itemXML);
                  }).toArray();
                  jqElement.childUpdate('elements', items);
                  jqElement.childUpdate({'tagAddedElements': true});
-                 options.success.call(jqElement, data, textStatus, jqXHR);
+                 self._fire('success', items);
                  resetTimeout(self);
              }, 
              error: function(jqXHR, textStatus, errorThrown) {
-                 options.error.call(jqElement, jqXHR, textStatus, errorThrown);
+                 self._fire('error', textStatus, errorThrown);
                  resetTimeout(self);
              }});
              return this;
